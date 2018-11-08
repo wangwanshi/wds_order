@@ -2,7 +2,7 @@
   <div class="order">
     <order-title></order-title>
     <order-list :family="family" :index="index" @jump="jump"></order-list>
-    <order-dishes :family="family" :dishes="dishes" :index="index"></order-dishes>
+    <order-dishes :family="family" :dishes="dishes" :index="index" @addCart="addCart"></order-dishes>
     <order-cart :cartList="cartList" @addCart="addCart"></order-cart>
   </div>
 </template>
@@ -20,7 +20,8 @@ export default {
           index:1,
           scroll:0,
           cartList:[],
-          count:{}
+          count:{},
+          
       }
   },
   methods:{
@@ -63,23 +64,29 @@ export default {
         var url="http://127.0.0.1:3000/getCart?uid="+uid
         this.$http.get(url).then(result=>{
           this.cartList=result.body;
+          for(var item of this.cartList){
+            for(var dish of this.dishes){
+              if(dish.did==item.dishId){
+                dish.count=item.count;
+                
+              }
+            }
+          }
         })
       },
-      addCart(did,c){
-        var uid=1;
-        for(var item of this.dishes){
-          if(item.did==did){
-            if(c==1&&item.count==19){
-              Toast("不能再多啦！")
-            }else{
-              item.count+=c
-            }console.log(item.count)
-            var url="http://127.0.0.1:3000/addCart?uid="+uid+"&dishId="+did+"&count="+item.count;
-            this.$http.get(url).then(result=>{
-              console.log(result)
-            })
-          }
-        }
+      addCart(did,i){
+        var uid=1
+        for(var dish of this.dishes){
+                if(did==dish.did){
+                    if((i>0&&dish.count<10)||(i<0&&dish.count>0))
+                    dish.count+=i
+                    console.log(dish.did,dish.count)
+                    var url="http://127.0.0.1:3000/addCart?uid="+uid+"&dishId="+did+"&count="+dish.count
+                    this.$http.get(url).then(result=>{
+                      console.log(result)
+                    })
+                }
+            }
       }
   },
   watch: {

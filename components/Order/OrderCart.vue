@@ -70,12 +70,14 @@ export default{
             }
         }
       },
-      addCart(did,c){
-          this.$emit("addCart",did,c)
+      addCart(did,i){
+          this.$forceUpdate();
+          this.$emit("addCart",did,i)
       }
     },
     watch: {
     cartList:function(){
+        this.$forceUpdate();
       this.getCount()
     }
     },

@@ -16,11 +16,11 @@
                         <span v-text="dish.price.toFixed(2)"></span>
                     </div>
                     <div class="dish-count">
-                        <div class="dish-count-minus"></div>
-                        <span class="dish-count-num" :key="dish.did" v-model="count[i-1]">1</span>
-                        <div class="dish-count-plus" @click="addCart(dish.did)"></div>
+                        <div class="dish-count-minus" v-show="dish.count>0" @click="addCart(dish.did,-1)"></div>
+                        <span class="dish-count-num" :key="dish.did" v-text="dish.count"  v-show="dish.count>0"></span>
+                        <div class="dish-count-plus" @click="addCart(dish.did,+1)"></div>
                     </div>
-            </div>
+                </div>
             </div>
         </div>
     </div>
@@ -36,13 +36,13 @@
         }
     },
     methods:{
-        addCart(did){
-
+       addCart(did,i){
+           this.$forceUpdate();
+            this.$emit("addCart",did,i)
         }
     },
     props:["family","dishes","index"],
     created(){
-
     },
   }
 </script>
