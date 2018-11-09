@@ -38,12 +38,18 @@
     methods:{
        addCart(did,i){
            this.$forceUpdate();
-            this.$emit("addCart",did,i)
+           this.$emit("addCart",did,i)
+        },
+        getCart(){
+            this.$emit("getCart")
         }
     },
-    props:["family","dishes","index"],
+    props:["family","dishes","index","cartList"],
     created(){
     },
+    watch:{
+        
+    }
   }
 </script>
 <style>

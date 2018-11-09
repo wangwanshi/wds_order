@@ -63,6 +63,7 @@ export default{
           this.cartShow=!this.cartShow
       },
       getCount(){
+          this.countAll=0
         if(this.cartList.length!=0){
             this.isNull=false;
             for(let i=0;i<this.cartList.length;i++){
@@ -78,7 +79,7 @@ export default{
     watch: {
     cartList:function(){
         this.$forceUpdate();
-      this.getCount()
+        this.getCount()
     }
     },
     created(){

@@ -2,7 +2,7 @@
   <div class="order">
     <order-title></order-title>
     <order-list :family="family" :index="index" @jump="jump"></order-list>
-    <order-dishes :family="family" :dishes="dishes" :index="index" @addCart="addCart"></order-dishes>
+    <order-dishes :family="family" :cartList="cartList" :dishes="dishes" :index="index" @addCart="addCart"></order-dishes>
     <order-cart :cartList="cartList" @addCart="addCart"></order-cart>
   </div>
 </template>
@@ -21,7 +21,6 @@ export default {
           scroll:0,
           cartList:[],
           count:{},
-          
       }
   },
   methods:{
@@ -35,6 +34,13 @@ export default {
               this.dishes=result.body;
               for(var i=0;i<this.dishes.length;i++){
                 this.dishes[i].count=0;
+                for(var item of this.cartList){
+                  for(var dish of this.dishes){
+                    if(dish.did==item.dishId){
+                      dish.count=item.count; 
+                    }
+                  }
+                }
               }
           })
       },
@@ -64,14 +70,7 @@ export default {
         var url="http://127.0.0.1:3000/getCart?uid="+uid
         this.$http.get(url).then(result=>{
           this.cartList=result.body;
-          for(var item of this.cartList){
-            for(var dish of this.dishes){
-              if(dish.did==item.dishId){
-                dish.count=item.count;
-                
-              }
-            }
-          }
+          
         })
       },
       addCart(did,i){
@@ -83,21 +82,26 @@ export default {
                     console.log(dish.did,dish.count)
                     var url="http://127.0.0.1:3000/addCart?uid="+uid+"&dishId="+did+"&count="+dish.count
                     this.$http.get(url).then(result=>{
-                      console.log(result)
+                      this.getCart();
+                      console.log(result.body.msg)
                     })
                 }
             }
+          
       }
   },
   watch: {
     scroll:function(){
       this.loadScroll()
+    },
+    cartList:function(){
+      this.getDishes()
     }
     },
   created(){
+      this.getCart();
       this.getFamily()
       this.getDishes()
-      this.getCart()
   },
   mounted() {
     window.addEventListener('scroll', this.dataScroll);
